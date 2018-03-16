@@ -171,12 +171,9 @@ class SuperTicTacToe(GameState):
         self.board[sub_board][square] = self.player_just_moved
 
         # Check if player has won a sub_board (tic tac toe game).
-        result = self.sub_board_result(self.player_just_moved, sub_board)
-        if result == 1.0:
-            print('a board has been won')
+        result = self.wins_sub_board(self.player_just_moved, sub_board)
+        if result:
             self.sub_boards_won[self.player_just_moved] += 1
-            import sys
-            sys.exit(1)
         '''
         elif result == 0.0:
             print('a board has been won')
@@ -187,9 +184,9 @@ class SuperTicTacToe(GameState):
 
     def sub_board_is_available(self, sub_board):
         # If won or lost, it's dead.
-        if self.sub_board_result(1, sub_board) == 1.0:
+        if self.wins_sub_board(1, sub_board):
             return False
-        if self.sub_board_result(2, sub_board) == 1.0:
+        if self.wins_sub_board(2, sub_board):
             return False
 
         # If all squares filled, it's dead.
@@ -249,7 +246,7 @@ class SuperTicTacToe(GameState):
         else:
             return 0.5
 
-    def sub_board_result(self, player: int, sub_board: int) -> float:
+    def wins_sub_board(self, player: int, sub_board: int) -> bool:
         """Get the result of a single sub_board (a single tic tac toe game)
         from the viewpoint of player.
 
@@ -261,14 +258,14 @@ class SuperTicTacToe(GameState):
             1.0 if player wins, 0.0 if player loses, 0.5 for a draw.
 
         """
-        sub_board = self.board[sub_board]
+        assert player == 1 or player == 2
+        sub = self.board[sub_board]
         for (x, y, z) in [(0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7),
                           (2, 5, 8), (0, 4, 8), (2, 4, 6)]:
-            if sub_board[x] == sub_board[y] == sub_board[z]:
-                if self.board[x] == player:
-                    return 1.0
-                else:
-                    return 0.0
+            if sub[x] == sub[y] == sub[z]:
+                if sub[x] == player:
+                    return True
+        return False
 
     def __repr__(self):
         """ Return a string representation of the board. """
