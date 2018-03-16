@@ -5,7 +5,7 @@ The two players, 1 and 2, can be given different strengths (max number of
 search iterations). The stronger player should win more often.
 
 """
-from board import SuperTicTacToe
+from game_state import SuperTicTacToe
 from play import play_game
 
 player_1_strength = 1000
