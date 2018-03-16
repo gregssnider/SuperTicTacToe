@@ -324,15 +324,14 @@ class SuperTicTacToe(GameState):
             return 0.5
 
     def wins_sub_board(self, player: int, sub_board: int) -> bool:
-        """Get the result of a single sub_board (a single tic tac toe game)
-        from the viewpoint of player.
+        """Check if a player has won a sub board (tic tac toe game).
 
         Args:
             player: 1 or 2
             sub_board: The index of the sub_board to check (0 - 8)
 
         Returns:
-            1.0 if player wins, 0.0 if player loses, 0.5 for a draw.
+            True if player has won the sub board.
 
         """
         assert player == 1 or player == 2
