@@ -168,14 +168,18 @@ def play_game(state: GameState):
     """ Play a sample game between two UCT players where each player gets a different number
         of UCT iterations (= simulations = tree nodes).
     """
+    move = 1
     while (state.get_moves() != []):
-        print(str(state))
+        print("Move", move, 'player', state.player_just_moved)
+        move += 1
         if state.player_just_moved == 1:
-            m = search(rootstate=state, itermax=100, verbose=False)
+            m = search(rootstate=state, itermax=1000, verbose=False)
         else:
             m = search(rootstate=state, itermax=1000, verbose=False)
-        # print("Best Move: " + str(m) + "\n")
         state.do_move(m)
+        print(str(state))
+    print("No more legal moves.")
+    print(str(state))
     if state.get_result(state.player_just_moved) == 1.0:
         print("Player " + str(state.player_just_moved) + " wins!")
     elif state.get_result(state.player_just_moved) == 0.0:

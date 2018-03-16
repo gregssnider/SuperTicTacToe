@@ -1,6 +1,6 @@
-from board import TicTacToe
+from board import SuperTicTacToe
 from play import play_game
 
 
-game = TicTacToe()
+game = SuperTicTacToe()
 play_game(game)
