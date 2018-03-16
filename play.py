@@ -170,16 +170,16 @@ def play_game(state: GameState):
     """
     move = 1
     while (state.get_moves() != []):
-        print("Move", move, 'player', state.player_just_moved)
-        move += 1
         if state.player_just_moved == 1:
-            m = search(rootstate=state, itermax=1000, verbose=False)
+            # Player 2
+            m = search(rootstate=state, itermax=10, verbose=False)
         else:
+            # Player 1
             m = search(rootstate=state, itermax=1000, verbose=False)
         state.do_move(m)
+        print("Move", move, 'player', state.player_just_moved)
+        move += 1
         print(str(state))
-    print("No more legal moves.")
-    print(str(state))
     if state.get_result(state.player_just_moved) == 1.0:
         print("Player " + str(state.player_just_moved) + " wins!")
     elif state.get_result(state.player_just_moved) == 0.0:
