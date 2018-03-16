@@ -32,7 +32,7 @@ from game_state import GameState
 class Node:
     """ A node in the game tree. 
     
-    Note wins is always from the viewpoint of player_just_moved.
+    Note that 'wins' is always from the viewpoint of player_just_moved.
     Crashes if state not specified.
     """
 
@@ -152,34 +152,35 @@ def search(rootstate: GameState, itermax: int, verbose=False) -> 'Move':
             node.update(state.get_result(node.player_just_moved))
             node = node.parent_node
 
-    # Output some information about the tree - can be omitted
-    '''
-    if (verbose):
-        print(rootnode.tree_to_string(0))
-    else:
-        print(rootnode.children_to_string())
-    '''
-
     # return the move that was most visited
     return sorted(rootnode.child_nodes, key=lambda c: c.visits)[-1].move  
 
 
-def play_game(state: GameState):
-    """ Play a sample game between two UCT players where each player gets a different number
-        of UCT iterations (= simulations = tree nodes).
+def play_game(state: GameState, player_1_strength: int, player_2_strength: int,
+              verbose=True):
+    """Play a simple game between two UCT players.
+
+    Args:
+        state: The game being played.
+        player_1_strength: The strength of player 1 (max iterations).
+        player_2_strength: The strength of player 2 (max_iterations).
+        verbose: True => print out status as game progresses.
+
     """
     move = 1
     while (state.get_moves() != []):
         if state.player_just_moved == 1:
             # Player 2
-            m = search(rootstate=state, itermax=10, verbose=False)
+            m = search(rootstate=state, itermax=player_2_strength)
         else:
             # Player 1
-            m = search(rootstate=state, itermax=1000, verbose=False)
+            m = search(rootstate=state, itermax=player_1_strength)
         state.do_move(m)
-        print("Move", move, 'player', state.player_just_moved)
+        if verbose:
+            print("Move", move, 'player', state.player_just_moved)
         move += 1
-        print(str(state))
+        if verbose:
+            print(str(state))
     if state.get_result(state.player_just_moved) == 1.0:
         print("Player " + str(state.player_just_moved) + " wins!")
     elif state.get_result(state.player_just_moved) == 0.0:

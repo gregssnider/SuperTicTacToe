@@ -104,14 +104,13 @@ class TicTacToe(GameState):
 
 
 class SuperTicTacToe(GameState):
-    """ The state of the 'super tic tac toe' game (the board).
+    """ The state of a 'super tic tac toe' game (the board).
 
     Attributes:
         board (List[List[int]]):
             Squares are specified with a tuple of indices. The first index
             specifies the tic-tac-toe game within the larger 3 x 3 grid. The
             second index specifies the square within that game:
-
 
                  first_index           second_index
 
@@ -127,8 +126,17 @@ class SuperTicTacToe(GameState):
                 6     7     8        345   345   345
                                      678   678   678
 
-
             For each square: 0 => empty, 1 => player 1 (X), 2 => player 2 (O)
+
+        sub_boards_won (List[int]): The number of 'sub boards' (tic tac toe
+            games) won by the two players.
+
+        squares_played (int): The number of squares that have been marked with
+            an 'X' or an 'O'.
+
+        last_square_played (int): The index of the last square played in
+            sub board. Needed because this index specifies the sub board that
+            the next player must mark (if available for marking).
     """
 
     def __init__(self):
@@ -174,22 +182,23 @@ class SuperTicTacToe(GameState):
         result = self.wins_sub_board(self.player_just_moved, sub_board)
         if result:
             self.sub_boards_won[self.player_just_moved] += 1
-        '''
-        elif result == 0.0:
-            print('a board has been won')
-            self.sub_boards_won[3 - self.player_just_moved] += 1
-        else:
-            pass
-        '''
 
-    def sub_board_is_available(self, sub_board):
-        # If won or lost, it's dead.
+    def sub_board_is_available(self, sub_board) -> bool:
+        """Check if a sub_board is available for writing.
+
+        Args:
+            sub_board: Index of desired sub board.
+
+        Returns:
+            True if sub board can be written.
+        """
+        # If won or lost, it's dead, can't be written anymore.
         if self.wins_sub_board(1, sub_board):
             return False
         if self.wins_sub_board(2, sub_board):
             return False
 
-        # If all squares filled, it's dead.
+        # If all squares filled, it's dead, can't be written anymore.
         for i in range(9):
             if self.board[sub_board][i] == 0:
                 return True
@@ -199,7 +208,9 @@ class SuperTicTacToe(GameState):
         """ Get all possible moves from this state.
 
         Returns:
-            A list of possible moves.
+            A list of possible moves. A move is an (int, int) tuple where the
+            first value is the index of the sub_board (tic tac toe game) and the
+            second value is the index of the square in that game to be marked.
         """
         if self.sub_boards_won[1] == 3 or self.sub_boards_won[2] == 3:
             # Game over, someone has already won.
